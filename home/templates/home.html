@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADvantage</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">ADvantage</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login/">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section id="hero" class="jumbotron text-center">
+            <div class="container">
+                <h1 class="jumbotron-heading">Manage Your Active Directory With Ease</h1>
+                <p class="lead">ADvantage provides seamless integration for managing Active Directory users and resources.</p>
+                <p><a href="#get-started" class="btn btn-primary my-2">Get Started</a></p>
+            </div>
+        </section>
+        <section id="features" class="container py-4">
+            <h2>Features</h2>
+            <ul class="list-unstyled">
+                <li>User Management</li>
+                <li>Resource Allocation</li>
+                <li>Security Monitoring</li>
+            </ul>
+        </section>
+        <section id="about" class="container py-4">
+            <h2>About ADvantage</h2>
+            <p>ADvantage is the premier tool for Active Directory integration, offering unparalleled control and security for your organization's needs.</p>
+        </section>
+        <section id="contact" class="container py-4">
+            <h2>Contact Us</h2>
+            <p>Have questions? <a href="mailto:info@advantage.com">Email us</a> for more information.</p>
+        </section>
+    </main>
+    <footer class="bg-light py-3">
+        <div class="container">
+            <p class="text-center">© 2024 ADvantage. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

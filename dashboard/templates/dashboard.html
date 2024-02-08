@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADvantage Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">ADvantage</a>
+        </div>
+    </header>
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <aside class="col-md-3">
+                <nav class="navbar navbar-light bg-light flex-column">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="#createUser">Create User</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#manageGroups">Manage Groups</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#viewLogs">View Logs</a></li>
+                    </ul>
+                </nav>
+            </aside>
+            <main class="col-md-9">
+                    <a href="#" class="btn btn-primary"><i class="bi bi-person-plus-fill"></i> Create User</a>
+                </div>
+                <!-- Sections for CreateUser, ManageGroups, and ViewLogs -->
+            </main>
+        </div>
+    </div>
+    <footer class="footer bg-light py-3 mt-auto">
+        <div class="container text-center">
+            <span class="text-muted">© 2024 ADvantage. All rights reserved.</span>
+        </div>
+    </footer>
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

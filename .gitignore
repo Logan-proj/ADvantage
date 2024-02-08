@@ -1,0 +1,21 @@
+# Virtual environment
+venv/
+
+# Compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Database
+*.sqlite3
+
+# Secret keys and credentials
+*.env
+
+# Log files
+*.log
+
+# User-uploaded media files
+/media/
+

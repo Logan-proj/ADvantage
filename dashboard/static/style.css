@@ -1,0 +1,18 @@
+/* Custom styles for ADvantage Dashboard */
+.dashboard-section h2 {
+    color: #007bff; /* Matching Bootstrap primary color */
+}
+
+/* Adjustments for section padding or margins if needed */
+.dashboard-section {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Custom footer styling */
+.footer {
+    border-top: 1px solid #ddd;
+}

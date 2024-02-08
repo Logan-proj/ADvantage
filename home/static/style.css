@@ -1,0 +1,22 @@
+/* Custom styles for ADvantage Homepage */
+.jumbotron {
+    background-color: #f8f9fa; /* Light grey background for the hero section */
+    margin-bottom: 0; /* Remove the default bottom margin from the jumbotron */
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+ul.list-unstyled {
+    padding-left: 0;
+    list-style-type: none;
+}
+
+ul.list-unstyled li {
+    padding-bottom: 0.5rem;
+}
+
+footer {
+    border-top: 1px solid #e7e7e7;
+}
