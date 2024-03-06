@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import ldap
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -124,3 +127,55 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Login Redirect Configuration
+LOGIN_REDIRECT_URL = '/dashboard'  # Redirect to home after login
+LOGIN_URL = 'login'  # Redirect to login page if not authenticated
+
+
+# LDAP Configuration
+AUTHENTICATION_BACKENDS = [
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',  # Keep the ModelBackend for superusers and permissions.
+]
+
+# LDAP server URI
+AUTH_LDAP_SERVER_URI = "ldap://mydomain.com"
+
+# Set up the connection to LDAP server
+AUTH_LDAP_CONNECTION_OPTIONS = {
+    ldap.OPT_REFERRALS: 0,
+    ldap.OPT_PROTOCOL_VERSION: 3,
+}
+
+# Use the service account's credentials for binding
+AUTH_LDAP_BIND_DN = "CN=srvc.advantage,OU=Users,OU=Administrators,OU=IT Department,OU=CaffinatedCoders,DC=mydomain,DC=com"
+AUTH_LDAP_BIND_PASSWORD = "Password3"
+
+# Search users by sAMAccountName
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    "OU=CaffinatedCoders,DC=mydomain,DC=com",
+    ldap.SCOPE_SUBTREE,
+    "(sAMAccountName=%(user)s)",
+)
+
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
+    "OU=CaffinatedCoders,DC=example,DC=com", ldap.SCOPE_SUBTREE, "(objectClass=groupOfNames)"
+)
+AUTH_LDAP_GROUP_TYPE = GroupOfNamesType()
+
+# Require group membership for authentication
+AUTH_LDAP_REQUIRE_GROUP = "CN=USR-ENT-ADvantage,OU=Groups,OU=Administrators,OU=IT Department,OU=CaffinatedCoders,DC=mydomain,DC=com"
+
+# Populate the Django user from the LDAP directory
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+}
+
+# Logging Configuration
+logger = logging.getLogger('django_auth_ldap')
+logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.DEBUG)
