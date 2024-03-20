@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ADvantage | Dashboard{% endblock title %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+<body class="d-flex flex-column" style="height: 100%;">
+    <header class="navbar navbar-expand-lg navbar-dark bg-primary flex-shrink-0">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">ADvantage</a>
+        </div>
+    </header>
+    
+    <div class="container-fluid flex-grow-1 d-flex p-0" style="overflow: hidden;">
+        <aside class="col-md-2 p-0 bg-light" style="height: calc(100vh - 56px);"> <!-- Adjust the 56px if the header height is different -->
+            <nav class="navbar navbar-light flex-md-column h-100">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/dashboard/create-user/' %}active{% endif %}" href="/dashboard/create-user/">Create User</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/dashboard/search-ad/' %}active{% endif %}" href="/dashboard/search-ad/">Search</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/dashboard/view-logs/' %}active{% endif %}" href="/dashboard/view-logs/">View Logs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/dashboard/settings/' %}active{% endif %}" href="/dashboard/settings/">Settings</a>
+                        </li>
+                    </ul>
+                </nav>                
+            </aside>
+            <main class="col-md-8">
+                {% block content %}
+                    <!-- Default content, this will be overridden by child templates -->
+                {% endblock content %}
+            </main>
+        </div>
+    </div>
+    <footer class="footer bg-light py-3 mt-auto flex-shrink-0">
+        <div class="container text-center">
+            <span class="text-muted">© 2024 ADvantage. All rights reserved.</span>
+        </div>
+    </footer>
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

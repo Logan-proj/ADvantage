@@ -15,6 +15,7 @@ from decouple import config
 import ldap
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 import logging
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -158,3 +159,25 @@ AUTH_LDAP_USER_ATTR_MAP = {
 logger = logging.getLogger('django_auth_ldap')
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        '': {  # This is the root logger
+            'handlers': ['console'],
+            'level': 'INFO',  # Change to DEBUG to capture all messages
+        },
+        'dashboard': {  # Replace with your Django app's name
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+
