@@ -1,0 +1,184 @@
+<!-- user_details_modal.html -->
+
+<!-- Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel">User Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" id="detailModalTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
+                </li>
+                <!-- Add additional tabs here -->
+            </ul>
+
+            <!-- Modal Form Body -->
+            <div class="modal-body">
+                <!-- Placeholder for loading/error message and spinner -->
+                <div id="loadingOrError" class="container">
+                    <div id="loadingProgress" class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="detailModalTabContent">
+                    <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+                        <!-- General Information Content -->
+                        <div class="form-row form-group">
+                            <label for="givenName" class="col-md-2 col-form-label">First Name</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="givenName">
+                            </div>
+                            <label for="initials" class="col-form-label">Initial</label>
+                            <div class="col">
+                                <input type="text" class="form-control" id="initials">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="sn" class="col-md-2 col-form-label">Last Name</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="sn">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="displayName" class="col-md-2 col-form-label">Display Name</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="displayName">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="description" class="col-md-2 col-form-label">Description</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="description">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="physicalDeliveryOfficeName" class="col-md-2 col-form-label">Office</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="physicalDeliveryOfficeName">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-row form-group">
+                            <label for="telephoneNumber" class="col-md-2 col-form-label">Telephone</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="telephoneNumber">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="mail" class="col-md-2 col-form-label">E-mail</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="mail">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="wWWHomePage" class="col-md-2 col-form-label">Web page</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="wWWHomePage">
+                            </div>
+                        </div>                     
+                    </div>
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <!-- Profile Information Content -->
+                        <div class="form-group">
+                            <label for="sAMAccountName">User logon name</label>
+                            <div class="form-row form-group">
+                                <input type="text" class="col-md-6 form-control" id="userPrincipalName0">
+                                <div class="col-md-6">
+                                    <input class="form-control" type="text" id="userPrincipalName1" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="sAMAccountName" class="col-form-label">User logon name (pre-Windows 2000)</label>
+                            <div class="col">
+                                <input type="text" class="form-control" id="sAMAccountName">
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                        <!-- Settings Content -->
+                    </div>
+                    <!-- Add additional tab panes here -->
+                </div>
+
+                <!-- User details will be dynamically filled here -->
+
+            </div>            
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<!-- Include jQuery CDN before custom scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    jQuery(document).ready(function(){
+        jQuery('#detailModal').on('show.bs.modal', function (event) {
+            var button = jQuery(event.relatedTarget);
+            var dn = button.data('dn');
+            var modal = jQuery(this);
+
+            // Show the spinner and hide user details content initially
+            modal.find('#detailModalTabContent').hide();
+            modal.find('#loadingOrError').show();
+
+            // AJAX call to fetch user details
+            jQuery.ajax({
+                type: "GET",
+                url: "{% url 'user-details' %}",
+                data: { 'dn': dn },
+                success: function(response) {
+                    // Iterate over the response object to populate form fields
+                    Object.keys(response).forEach(function(key) {
+                        var value = response[key];
+
+                        // Special handling for userPrincipalName
+                        if(response.userPrincipalName) {
+                            var logonPart = response.userPrincipalName.split('@')[0]; // Get the part before '@'
+                            var domainPart = '@' + response.userPrincipalName.split('@')[1]; // Get the part after '@'
+                            modal.find('#userPrincipalName0').val(logonPart); // Populate the field with the logon part
+                            modal.find('#userPrincipalName1').val(domainPart); // Populate the field with the domain part
+                        }
+                        
+                        // For handling binary data or arrays differently
+                        if (key === 'objectGUID' || key === 'objectSid') {
+                            value = '<i>Binary Data</i>'; // Placeholder or conversion
+                        } else if (Array.isArray(value)) {
+                            value = value.join(', '); // Join array values
+                        }
+                        
+                        // Find the input field in the form that matches the key and update its value
+                        modal.find('#detailModalTabContent [id="' + key + '"]').val(value);
+                    });
+
+                    // Hide the spinner and show user details content
+                    modal.find('#loadingOrError').hide();
+                    modal.find('#detailModalTabContent').show();
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    console.error('Error - ' + errorMessage);
+                    // Show error message (keep the spinner hidden)
+                    modal.find('#loadingOrError').show().text('Could not retrieve details - ' + errorMessage);
+                }
+            });
+        });
+    });
+</script>      
+{% endblock %}

@@ -148,13 +148,13 @@ def user_details(request):
     conn = ldap.initialize(server_uri)
 
     try:
-        # Bind/authenticate with a user
+        # Connect with service account
         conn.simple_bind_s(user_dn, password)
 
         # Perform a search operation
         search_scope = ldap.SCOPE_BASE
         search_filter = '(objectClass=*)'
-        result = conn.search_s(dn, search_scope, search_filter, None)  # None to fetch all attributes
+        result = conn.search_s(dn, search_scope, search_filter, None) # Get all attributes
 
         if result:
             _, attrs = result[0]  # Get attributes of the DN
