@@ -1,9 +1,14 @@
-{% extends 'dashboard/base.html' %}
+{% extends 'base.html' %}
 {% load form_tags %}
 
 {% block title %}ADvantage | Search{% endblock %}
 
 {% block content %}
+<!-- Include jQuery CDN before custom scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- For JQuery Redirect -->
+<div id="baseUserDetailsUrl" style="display: none;" data-url="{% url 'user-details' 'PLACEHOLDER' %}"></div>
+
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-lg-12">
@@ -28,9 +33,10 @@
             {% if search_results %}
             <div class="list-group">
                 {% for result in search_results %}
-                    <a href="#" class="list-group-item list-group-item-action d-flex align-items-start" data-toggle="modal" data-target="#detailModal" data-dn="{{ result.dn }}">
+                     <!-- Trigger AJAX call -->
+                     <a href="javascript:void(0);" class="list-group-item list-group-item-action d-flex align-items-start user-detail-link" data-dn="{{ result.dn }}">
                         <!-- Icons based on object class -->
-                        <div class="mr-2">
+                        <div class="icon-container mr-2">
                             {% if 'user' in result.object_class and result.is_disabled %}
                                 <i class="bi bi-person-fill-slash text-danger"></i>
                             {% elif 'user' in result.object_class %}
@@ -50,7 +56,7 @@
                         </div>
                     </a>
                 {% endfor %}
-            </div>
+            </div>            
             {% elif search_query and not search_results %}
                 <div class="alert alert-info">No results found.</div>
             {% endif %}
@@ -80,26 +86,40 @@
     </div>
 </div>
 
-<!-- Detail Modal -->
-{% include 'dashboard/user_details_modal.html' %}
-
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Function to show the spinner
-    function showSpinner() {
-        document.getElementById('loadingSpinner').style.display = 'block';
-    }
+    console.log("Checking if jQuery loads correctly", window.jQuery);
+    jQuery(document).ready(function(){
+        var baseUrl = jQuery('#baseUserDetailsUrl').data('url'); // Fetch this outside the click handler
 
-    // Function to hide the spinner
-    function hideSpinner() {
-        document.getElementById('loadingSpinner').style.display = 'none';
-    }
+        jQuery(document).on('click', '.user-detail-link', function() {
+            var dn = jQuery(this).data('dn');
+            var targetUrl = baseUrl.replace('PLACEHOLDER', encodeURIComponent(dn)); // Ensure 'dn' is URL-encoded
+            
+            var iconContainer = jQuery(this).find('.icon-container');
 
-    // Event listener for the form submission
-    document.querySelector('form').addEventListener('submit', function() {
-        showSpinner();
+            // Save current icon HTML to restore later
+            var originalIconHtml = iconContainer.html();
+
+            // Replace icon with spinner
+            iconContainer.html('<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div>');
+
+            jQuery.ajax({
+                type: "GET",
+                url: "{% url 'get-user-details' %}",
+                data: { 'dn': dn },
+                success: function(response) {
+                     // Store the response data in localStorage or sessionStorage
+                    localStorage.setItem('userDetails', JSON.stringify(response));
+                    window.location.href = targetUrl; // Redirect to the user details page
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error - ' + xhr.status + ': ' + xhr.statusText);
+                }
+            });
+        });
     });
 </script>
 {% endblock %}

@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block title %}ADvantage | User Details{% endblock %}
+
+{% block content %}
+<!-- User Details Section -->
+<div class="user-details-section container mt-4">
+    <h2 class="section-title" id="user-details-section"></h2>
+
+            <!-- Section Body -->
+            <div class="section-body">
+
+                <div class="card">
+                    <div class="card-header">General</div>
+                    <div class="card-body">
+                          <!-- General Information Content -->
+                          <div class="form-row form-group">
+                            <label for="givenName" class="col-md-2 col-form-label">First Name</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="givenName">
+                            </div>
+                            <label for="initials" class="col-form-label">Initial</label>
+                            <div class="col">
+                                <input type="text" class="form-control" id="initials">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="sn" class="col-md-2 col-form-label">Last Name</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="sn">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="displayName" class="col-md-2 col-form-label">Display Name</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="displayName">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="description" class="col-md-2 col-form-label">Description</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="description">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="physicalDeliveryOfficeName" class="col-md-2 col-form-label">Office</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="physicalDeliveryOfficeName">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-row form-group">
+                            <label for="telephoneNumber" class="col-md-2 col-form-label">Telephone</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="telephoneNumber">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="mail" class="col-md-2 col-form-label">E-mail</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="mail">
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="wWWHomePage" class="col-md-2 col-form-label">Web page</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="wWWHomePage">
+                            </div>
+                        </div>                     
+                    </div>
+                  </div>
+
+                  <div class="card">
+                    <div class="card-header">Profile</div>
+                    <div class="card-body">
+                        <!-- Profile Information Content -->
+                        <div class="form-group">
+                            <label for="sAMAccountName">User logon name</label>
+                            <div class="form-row form-group">
+                                <input type="text" class="col-md-6 form-control" id="userPrincipalName0">
+                                <div class="col-md-6">
+                                    <input class="form-control" type="text" id="userPrincipalName1" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <label for="sAMAccountName" class="col-form-label">User logon name (pre-Windows 2000)</label>
+                            <div class="col">
+                                <input type="text" class="form-control" id="sAMAccountName">
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center justify-content-around">
+                            
+                            <button type="button" id="fetchLogonHoursBtn" class="btn btn-secondary" {% for result in search_results %} data-dn="{{ result.dn }}" {% endfor %}>Logon Hours...</button>
+                            <button type="button" class="btn btn-secondary">Log On To...</button>
+                            
+                        </div>
+                    </div>
+                    <!-- Add additional cards here -->
+                </div>
+
+                <!-- User details will be dynamically filled here -->
+
+            </div>            
+        </div>
+    </div>
+</div>
+
+<!-- Logon Hours Modal -->
+<div class="modal fade" id="logonHoursModal" tabindex="-1" role="dialog" aria-labelledby="logonHoursModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logonHoursModalLabel">Account Logon Hours</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Logon hours content will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Include jQuery CDN before custom scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    jQuery(document).ready(function() {
+    // Retrieve the stored user details from localStorage
+    var userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    console.log('User details:', userDetails);
+
+    // Now you can use 'userDetails' to populate your page with user data
+    // Example: jQuery('#userName').text(userDetails.name);
+    jQuery('#user-details-section').text(userDetails.displayName);
+
+    for (var key in userDetails) {
+        if (userDetails.hasOwnProperty(key)) {
+            if (key === 'userPrincipalName') {
+                var parts = userDetails[key].split('@');
+                jQuery('#userPrincipalName0').val(parts[0]);
+                jQuery('#userPrincipalName1').val('@' + parts[1]);
+            } else if (key === 'logonHours') {
+                // Skip logonHours for now
+                continue;
+            }
+            jQuery('#' + key).val(userDetails[key]);
+        }
+    }
+
+    // Optionally, clear the localStorage after use to avoid stale data
+    //localStorage.removeItem('userDetails');
+});
+
+    jQuery(document).ready(function(){
+        jQuery('#fetchLogonHoursBtn').click(function() {
+            var dn = $(this).data('dn'); // Retrieve DN from the button's data attribute
+            jQuery.ajax({
+                type: "GET",
+                url: "{% url 'logon-hours' %}",
+                data: {'dn': dn},
+                success: function(data) {
+                    var modalBody = $('#logonHoursModal .modal-body');
+                    modalBody.empty(); // Clear previous content
+
+                    // Example: Create a list or table based on 'data.logonHours'
+                    var content = '<ul>';
+                    data.logonHours.forEach(function(hour) {
+                        content += '<li>' + hour[0] + ': ' + hour[1] + '</li>';
+                    });
+                    content += '</ul>';
+
+                    modalBody.append(content); // Add the content to the modal body
+                    $('#logonHoursModal').modal('show'); // Display the modal
+                },
+                error: function(xhr, status, error) {
+                    $('#logonHoursModal .modal-body').html('Could not retrieve logon hours.');
+                    $('#logonHoursModal').modal('show');
+                }
+            });
+        });
+    });
+</script> 
+{% endblock %}

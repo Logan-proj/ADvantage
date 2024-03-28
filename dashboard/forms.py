@@ -6,7 +6,7 @@ class LDAPSettingsForm(forms.ModelForm):
         model = LDAPSettings
         fields = '__all__'
         widgets = {
-            'bind_password': forms.PasswordInput(),  # Mask the bind_password field
+            'bind_password': forms.PasswordInput(),
         }
 
 
