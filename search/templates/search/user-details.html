@@ -6,12 +6,12 @@
 {% block content %}
 <!-- User Details Section -->
 <div class="user-details-section container mt-4">
-    <h2 class="section-title" id="user-details-section"></h2>
+    <h2 class="section-title mb-4" id="user-details-section"></h2>
 
             <!-- Section Body -->
-            <div class="section-body">
+            <div class="container-fluid">
 
-                <div class="card">
+                <div class="card mb-4">
                     <div class="card-header">General</div>
                     <div class="card-body">
                           <!-- General Information Content -->
@@ -71,7 +71,7 @@
                     </div>
                   </div>
 
-                  <div class="card">
+                  <div class="card mb-4">
                     <div class="card-header">Profile</div>
                     <div class="card-body">
                         <!-- Profile Information Content -->
@@ -94,8 +94,44 @@
                             
                             <button type="button" id="fetchLogonHoursBtn" class="btn btn-secondary" {% for result in search_results %} data-dn="{{ result.dn }}" {% endfor %}>Logon Hours...</button>
                             <button type="button" class="btn btn-secondary">Log On To...</button>
-                            
                         </div>
+                        
+                        <!-- Account options check boxes-->
+                        <div class="border bg-light p-3 mt-3 rounded">
+                        <div class="form-check form-group">
+                            <input type="checkbox" id="pwdLastSetCheckbox"> User must change password at next logon
+                        </div>
+                        <div class="form-check form-group">
+                            <input type="checkbox" id="passwdCantChangeCheckbox" disabled> User cannot change password <!-- Disabled - Needs access to ACL to work-->
+                        </div>
+                        <div class="form-check form-group">
+                            <input type="checkbox" id="passwordNeverExpiresCheckbox"> Password never expires
+                        </div>
+                        <div class="form-check form-group">
+                            <input type="checkbox" id="storePasswordReversibleEncryptionCheckbox" disabled> Store password using reversible encryption <!-- Disabled - No bit that I could find-->
+                        </div>
+                        <div class="form-check form-group">
+                            <input type="checkbox" id="accountIsDisabledCheckbox"> Account is disabled
+                        </div>
+                        <div class="form-check form-group">
+                            <input type="checkbox" id="smartCardRequiredCheckbox"> Smart card is required for interactive logon
+                        </div>
+                        <div class="form-check form-group">
+                            <input type="checkbox" id="accountIsSensitiveCheckbox"> Account is sensitive and cannot be delegated
+                        </div>           
+                        <div class="form-check form-group">
+                            <input type="checkbox" id="kerberosDESEncryptionCheckbox"> Use only Kerberos DES encryption types for this account
+                        </div>
+                        <div class="form-check form-group">
+                            <input type="checkbox" id="aes128BitEncryptionCheckbox"> This account supports Kerneros AES 128 bit encryption
+                        </div>
+                        <div class="form-check form-group">
+                            <input type="checkbox" id="aes256BitEncryptionCheckbox"> This account supports Kerneros AES 256 bit encryption
+                        </div>
+                        <div class="form-check form-group">
+                            <input type="checkbox" id="kerberosPreauthRequiredCheckbox"> Do not require Kerberos preauthentication
+                        </div>
+                    </div>
                     </div>
                     <!-- Add additional cards here -->
                 </div>
@@ -135,21 +171,69 @@
     var userDetails = JSON.parse(localStorage.getItem('userDetails'));
     console.log('User details:', userDetails);
 
-    // Now you can use 'userDetails' to populate your page with user data
-    // Example: jQuery('#userName').text(userDetails.name);
     jQuery('#user-details-section').text(userDetails.displayName);
 
+    // Define handlers for specific keys
+    var handlers = {
+        userAccountControl: function(value) {
+            // Reference: https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties
+            // Ensure 'value' is an integer
+            value = parseInt(value);
+
+            // Password never expires
+            var passwordNeverExpires = value & 0x10000;
+            jQuery('#passwordNeverExpiresCheckbox').prop('checked', passwordNeverExpires > 0);
+
+            // Account is disabled
+            var accountIsDisabled = value & 0x2; // 2nd bit
+            jQuery('#accountIsDisabledCheckbox').prop('checked', accountIsDisabled);
+
+            // Smart card is required for interactive logon
+            var smartCardRequired = value & 0x40000; // 18th bit
+            jQuery('#smartCardRequiredCheckbox').prop('checked', smartCardRequired);
+
+            // Account is sensitive and cannot be delegated
+            var accountIsSensitive = value & 0x100000; // 20th bit
+            jQuery('#accountIsSensitiveCheckbox').prop('checked', accountIsSensitive);
+
+            // Account does not require Kerberos pre-authentication
+            var useDES = value & 0x200000; // 21st bit
+            jQuery('#kerberosDESEncryptionCheckbox').prop('checked', useDES);
+
+            // Kerberos pre-authentication is required
+            jQuery('#kerberosPreauthRequiredCheckbox').prop('checked', !!(value & 0x400000));
+        },
+        'msDS-SupportedEncryptionTypes': function(value) {
+            value = parseInt(value, 10);
+
+            // AES 128-bit encryption
+            jQuery('#aes128BitEncryptionCheckbox').prop('checked', !!(value & 0x08));
+
+            // AES 256-bit encryption
+            jQuery('#aes256BitEncryptionCheckbox').prop('checked', !!(value & 0x10));
+        },
+        pwdLastSet: function(value) {
+            var mustChangePwd = parseInt(value) === 0;
+            jQuery('#pwdLastSetCheckbox').prop('checked', mustChangePwd);
+        },
+        userPrincipalName: function(value) {
+            var parts = value.split('@');
+            jQuery('#userPrincipalName0').val(parts[0]);
+            jQuery('#userPrincipalName1').val('@' + parts[1]);
+        },
+        // Define more handlers as necessary
+    };
+
+    // Loop through userDetails and call the appropriate handler or default action
     for (var key in userDetails) {
         if (userDetails.hasOwnProperty(key)) {
-            if (key === 'userPrincipalName') {
-                var parts = userDetails[key].split('@');
-                jQuery('#userPrincipalName0').val(parts[0]);
-                jQuery('#userPrincipalName1').val('@' + parts[1]);
-            } else if (key === 'logonHours') {
-                // Skip logonHours for now
-                continue;
+            if (handlers[key]) {
+                // Call the handler for this key
+                handlers[key](userDetails[key]);
+            } else if (key !== 'logonHours') { // Skip logonHours, or handle it if needed
+                // Default action for keys without a specific handler
+                jQuery('#' + key).val(userDetails[key]);
             }
-            jQuery('#' + key).val(userDetails[key]);
         }
     }
 

@@ -34,31 +34,31 @@
     </header>    
     
     <div class="container-fluid flex-grow-1 d-flex p-0" style="overflow: hidden;">
-        <aside class="col-md-2 p-0 bg-light" style="height: calc(100vh - 56px);"> <!-- Adjust the 56px if the header height is different -->
-            <nav class="navbar navbar-light flex-md-column h-100">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/dashboard/create-user/' %}active{% endif %}" href="/dashboard/create-user/">Create User</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/search-ad/' %}active{% endif %}" href="{% url 'search_ad' %}">Search</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/dashboard/view-logs/' %}active{% endif %}" href="/dashboard/view-logs/">View Logs</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.path == '/dashboard/settings/' %}active{% endif %}" href="/dashboard/settings/">Settings</a>
-                        </li>
-                    </ul>
-                </nav>                
-            </aside>
-            <main class="col-md-8">
-                {% block content %}
-                    <!-- Default content, this will be overridden by child templates -->
-                {% endblock content %}
-            </main>
-        </div>
+        <aside class="col-md-2 p-0 bg-white" style="height: calc(100vh - 56px);"> <!-- Adjust the 56px if the header height is different -->
+        <nav class="navbar navbar-primary flex-md-column h-100">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/dashboard/create-user/' %}active{% endif %}" href="/dashboard/create-user/">Create User</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/search-ad/' %}active{% endif %}" href="{% url 'search_ad' %}">Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/dashboard/view-logs/' %}active{% endif %}" href="/dashboard/view-logs/">View Logs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/dashboard/settings/' %}active{% endif %}" href="/dashboard/settings/">Settings</a>
+                    </li>
+                </ul>
+            </nav>                
+        </aside>
+        <main class="col-md-8 bg-light border">
+            {% block content %}
+                <!-- Default content, this will be overridden by child templates -->
+            {% endblock content %}
+        </main>
     </div>
+
     <footer class="footer bg-light py-3 mt-auto flex-shrink-0">
         <div class="container text-center">
             <span class="text-muted">© 2024 ADvantage. All rights reserved.</span>
